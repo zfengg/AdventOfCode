@@ -1,10 +1,8 @@
-#! julia
-
 # AoC 2022 Day 22: Part 1
 
 getpass(r, c, f) = 1000 * r + 4 * c + f
 
-INPUT = "input1.txt"
+INPUT = joinpath(@__DIR__, "input1.txt")
 
 """
 read map and path
@@ -17,12 +15,11 @@ end
 M, P = readinput(INPUT)
 
 """
-the PART 1
+PART 1
 """
 function getrcf(M, P)
 	# init
 	s = [1, findfirst(".", M[1])[1], 0]
-	@info s
 
 	# start tracing path
 	cmdstart = 1
@@ -39,89 +36,92 @@ function getrcf(M, P)
 			cmdend += 1
 		end
 		cmdstart = cmdend
-		if cmdstart > length(P)
-			break
-		end
-
-		@info cmd
 
 		# rotation
 		if cmd == "R"
-			s[end] = (s[end] + 1) % 4
+			s[end] = mod(s[end] + 1, 4) 
+			@info s
+			# sleep(10)
 			continue
 		end
 		if cmd == "L"
-			s[end] = (s[end] - 1) % 4
+			s[end] = mod(s[end] - 1, 4)
+			@info s
+			# sleep(10)
 			continue
 		end
-
+		
 		# move
 		numMv = parse(Int, cmd)
 		mv = 1
 		if s[end] == 0
-			@info M[s[1]]
 			while mv <= numMv
 				next = s[2] % length(M[s[1]]) + 1
-				@info next
-				while M[s[1]][next] == " "
-					@info M[s[1]][next]
-					next += 1
+				while M[s[1]][next] == ' '
+					next += next % length(M[s[1]]) + 1
 				end
-				M[s[1]][next] == "#" && break
+				M[s[1]][next] == '#' && break
 				s[2] = next
-				@info s
 				mv += 1
 			end
+			continue
 		end
 		if s[end] == 1
 			while mv <= numMv
 				next = s[1] % length(M) + 1
-				while length(M[next]) < s[2] ||  M[next][s[2]] == " "
-					next += 1
+				while length(M[next]) < s[2] ||  M[next][s[2]] == ' '
+					next = next % length(M) + 1
 				end
-				M[next][s[2]] == "#" && break
+				M[next][s[2]] == '#' && break
 				s[1] = next
 				mv += 1
 			end
+			continue
 		end
 		if s[end] == 2
 			while mv <= numMv
-				next = undef
-				if s[2] == 1
-					next = length(M[s[1]])
-				else
-					next = s[2] - 1
-				end
-				# next = s[2] % length(M[s[1]])
-				if M[s[1]][next] == " "
+				next = s[2] - 1
+				if iszero(next)
 					next = length(M[s[1]])
 				end
-				M[s[1]][next] == "#" && break
+				while  M[s[1]][next] == ' '
+					next = next - 1
+					if iszero(next)
+						next = length(M[s[1]])
+					end
+				end
+				M[s[1]][next] == '#' && break
 				s[2] = next
 				mv += 1
 			end
+			continue
 		end
 		if s[end] == 3
 			while mv <= numMv
-				next = undef
-				if s[1] == 1
+				next = s[1] - 1
+				if iszero(next)
 					next = length(M)
-				else
-					next = s[1] - 1
 				end
-				while length(M[next]) < s[2] ||  M[next][s[2]] == " "
-					next -= 1
+				while length(M[next]) < s[2] ||  M[next][s[2]] == ' '
+					next = next - 1
+					if iszero(next)
+						next = length(M)
+					end
 				end
-				M[next][s[2]] == "#" && break
+				M[next][s[2]] == '#' && break
 				s[1] = next
 				mv += 1
 			end
+			continue
 		end
-		@info s
 	end
+	@info s
 	return s
 end
 
-M, P = readinput("inputtest.txt")
-getrcf(M, P)
+output(p) = getpass(getrcf(readinput(joinpath(@__DIR__, p))...)...)
 
+# M, P = readinput(joinpath(@__DIR__, "inputtest.txt"))
+# getrcf(M, P)
+# @info output("inputTmp.txt")
+output("input1.txt")

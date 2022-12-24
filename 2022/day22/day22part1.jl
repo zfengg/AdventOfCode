@@ -36,14 +36,10 @@ function getrcf(M, P)
 		# rotation
 		if cmd == "R"
 			s[end] = mod(s[end] + 1, 4) 
-			# @info s
-			# sleep(10)
 			continue
 		end
 		if cmd == "L"
 			s[end] = mod(s[end] - 1, 4)
-			# @info s
-			# sleep(10)
 			continue
 		end
 		
@@ -52,9 +48,9 @@ function getrcf(M, P)
 		mv = 1
 		if s[end] == 0
 			while mv <= numMv
-				next = s[2] % length(M[s[1]]) + 1
+				next = mod(s[2], length(M[s[1]])) + 1
 				while M[s[1]][next] == ' '
-					next += next % length(M[s[1]]) + 1
+					next = mod(next, length(M[s[1]])) + 1
 				end
 				M[s[1]][next] == '#' && break
 				s[2] = next
@@ -64,9 +60,9 @@ function getrcf(M, P)
 		end
 		if s[end] == 1
 			while mv <= numMv
-				next = s[1] % length(M) + 1
+				next = mod(s[1], length(M)) + 1
 				while length(M[next]) < s[2] ||  M[next][s[2]] == ' '
-					next = next % length(M) + 1
+					next = mod(next, length(M)) + 1
 				end
 				M[next][s[2]] == '#' && break
 				s[1] = next

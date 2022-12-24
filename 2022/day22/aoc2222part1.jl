@@ -2,8 +2,6 @@
 
 getpass(r, c, f) = 1000 * r + 4 * c + f
 
-INPUT = joinpath(@__DIR__, "input1.txt")
-
 """
 read map and path
 """
@@ -11,8 +9,6 @@ function readinput(input)
 	rl = readlines(input)
 	return rl[1:end-2], rl[end]
 end
-
-M, P = readinput(INPUT)
 
 """
 PART 1
@@ -40,13 +36,13 @@ function getrcf(M, P)
 		# rotation
 		if cmd == "R"
 			s[end] = mod(s[end] + 1, 4) 
-			@info s
+			# @info s
 			# sleep(10)
 			continue
 		end
 		if cmd == "L"
 			s[end] = mod(s[end] - 1, 4)
-			@info s
+			# @info s
 			# sleep(10)
 			continue
 		end
@@ -115,13 +111,13 @@ function getrcf(M, P)
 			continue
 		end
 	end
-	@info s
 	return s
 end
 
 output(p) = getpass(getrcf(readinput(joinpath(@__DIR__, p))...)...)
 
-# M, P = readinput(joinpath(@__DIR__, "inputtest.txt"))
-# getrcf(M, P)
-# @info output("inputTmp.txt")
-output("input1.txt")
+# ---------------------------------------------------------------------------- #
+#                                     test                                     #
+# ---------------------------------------------------------------------------- #
+@info output("inputtest.txt") == 6032
+output("input.txt")
